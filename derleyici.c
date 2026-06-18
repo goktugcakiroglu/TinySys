@@ -1,6 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// --- Sembol Tablosu Yapısı ---
+typedef struct {
+    char name[20];
+    int defined; // 0: Tanımlı değil, 1: Tanımlı
+} Symbol;
+
+Symbol symbolTable[50]; // En fazla 50 değişken
+int symbolCount = 0;
+
+// Değişkeni bul veya ekle
+void registerSymbol(char *name) {
+    for(int i = 0; i < symbolCount; i++) {
+        if(strcmp(symbolTable[i].name, name) == 0) return; // Zaten var
+    }
+    strcpy(symbolTable[symbolCount].name, name); 
+    symbolTable[symbolCount].defined = 1;
+    symbolCount++;
+}
+
+// Tanımlı mı kontrol et
+int isDefined(char *name) {
+    for(int i = 0; i < symbolCount; i++) {
+        if(strcmp(symbolTable[i].name, name) == 0) return 1;
+    }
+    return 0;
+}
 
 // --- KÜRESEL DURUM DEĞİŞKENLERİ ---
 int if_sayaci = 0; // İç içe olmayan IF bloklarını numaralandırmak için
@@ -19,6 +45,12 @@ void translate_print(char *satir) {
 void translate_add(char *satir) {
     char hedef[20], arg1[20], arg2[20];
     sscanf(satir, "%s = %s + %s", hedef, arg1, arg2);
+
+    if(!isDefined(arg1) && (arg1[0] < '0' || arg1[0] > '9')) {
+        printf("; HATA: Tanimlanmamis degisken kullanildi -> %s\n", arg1);
+        return;
+    }
+    
     printf("; --- Toplama: %s ---\n", satir);
     printf("\tLDAA %s\n", arg1);
     
@@ -81,15 +113,21 @@ void translate_endif(char *satir) {
 }
 
 void translate_assign(char *satir) {
-    char hedef[20], arg1[20];
-    sscanf(satir, "%s = %s", hedef, arg1);
+    char var_name[20], value[20];
+    sscanf(satir, "%s = %s", var_name, value);
+    
+    registerSymbol(var_name); // Sembol tablosuna kaydettik!
+    
     printf("; --- Atama: %s ---\n", satir);
-    if (arg1[0] >= '0' && arg1[0] <= '9') {
-        printf("\tLDAA #%s\n", arg1);
+    
+    // Değer sayı mı değişken mi?
+    if (value[0] >= '0' && value[0] <= '9') {
+        printf("\tLDAA #%s\n", value); // Sayıysa Immediate
     } else {
-        printf("\tLDAA %s\n", arg1);
+        printf("\tLDAA %s\n", value);  // Değişken ise Direct
     }
-    printf("\tSTAA %s\n\n", hedef);
+    
+    printf("\tSTAA %s\n\n", var_name);
 }
 
 void translate_while(char *satir) {

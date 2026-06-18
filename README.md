@@ -2,6 +2,8 @@
 
 TinySys, basit bir üst seviye dil (TinyLang) ile yazılmış kodları, doğrudan Motorola 6800 Assembly makine koduna dönüştüren **bütünleşik bir derleyici ekosistemidir.** Proje; yazılımın en üst katmanından (GUI) başlayıp, işletim sistemi araçlarından (Bash/Linux) ve derleyici teorisinden (C) geçerek saf donanım diline (Assembly) inen süreci kusursuz bir mimariyle aydınlatmayı hedefler.
 
+**Current Status:** Includes Semantic Analysis & Symbol Table for variable tracking.
+
 **Not:** Bu proje standart bir çevirmen (translator) değildir. Unix felsefesiyle birbirine bağlanmış; Frontend (Python), Middleware (Bash Pipeline) ve Backend (C) katmanlarından oluşan, donanım seviyesine (Motorola 6800) tam uyumlu bir tam yığın (full-stack) sistem programlama mimarisidir.
 
 ## Requirements
