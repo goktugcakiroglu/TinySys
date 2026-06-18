@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Derlenmiş binary dosyaları
+derleyici
+
+# Geçici ve test dosyaları
+*.txt
+__pycache__/
+*.asm
