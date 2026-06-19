@@ -1,10 +1,8 @@
 # TinySys: Full-Stack Derleyici ve İşletim Ekosistemi
 
-TinySys, basit bir üst seviye dil (TinyLang) ile yazılmış kodları, doğrudan Motorola 6800 Assembly makine koduna dönüştüren **bütünleşik bir derleyici ekosistemidir.** Proje; yazılımın en üst katmanından (GUI) başlayıp, işletim sistemi araçlarından (Bash/Linux) ve derleyici teorisinden (C) geçerek saf donanım diline (Assembly) inen süreci kusursuz bir mimariyle aydınlatmayı hedefler.
+TinySys, üst seviye bir dil olan TinyLang ile yazılan kodları Motorola 6800 Assembly makine koduna çeviren, modüler bir derleyici projesidir. Proje, yazılım mimarisinde katmanlı yapı prensiplerini uygulamak amacıyla; bir Python arayüzü, Bash tabanlı ön işleme (pre-processing) betikleri ve C dili ile geliştirilmiş bir derleyici çekirdeğinden oluşmaktadır.
 
 **Current Status:** Includes Semantic Analysis & Symbol Table for variable tracking.
-
-**Not:** Bu proje standart bir çevirmen (translator) değildir. Unix felsefesiyle birbirine bağlanmış; Frontend (Python), Middleware (Bash Pipeline) ve Backend (C) katmanlarından oluşan, donanım seviyesine (Motorola 6800) tam uyumlu bir tam yığın (full-stack) sistem programlama mimarisidir.
 
 ## Requirements
 
@@ -70,7 +68,7 @@ Sistem, Python GUI üzerinden arka plan (terminal) hatalarını yakalayan güven
 
 ```text
 TinySys/
-├── gui.py              # Frontend: Tam duyarlı (responsive) Python Tkinter arayüzü ve state yönetimi
+├── gui.py              # Frontend: Python Tkinter arayüzü ve state yönetimi
 ├── tam_sistem.sh       # Middleware: Sistem orkestratörü ve Python-C köprüsü
 ├── temizleyici.sh      # Middleware: Lexical temizleyici (Yorum ve boşluk silici)
 ├── derleyici.c         # Backend: OCP Mimari ile yazılmış C Compiler motoru
