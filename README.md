@@ -1,8 +1,45 @@
-# TinySys: Full-Stack Derleyici ve İşletim Ekosistemi
+[![TinySys Pipeline CI](https://github.com/goktugcakiroglu/TinySys/actions/workflows/tinysys-ci.yml/badge.svg)](https://github.com/goktugcakiroglu/TinySys/actions/workflows/tinysys-ci.yml)
 
 TinySys, üst seviye bir dil olan TinyLang ile yazılan kodları Motorola 6800 Assembly makine koduna çeviren, modüler bir derleyici projesidir. Proje, yazılım mimarisinde katmanlı yapı prensiplerini uygulamak amacıyla; bir Python arayüzü, Bash tabanlı ön işleme (pre-processing) betikleri ve C dili ile geliştirilmiş bir derleyici çekirdeğinden oluşmaktadır.
 
 **Current Status:** Includes Semantic Analysis & Symbol Table for variable tracking.
+
+## 🏗️ Compiler Pipeline Architecture
+
+Derleme süreci, 3 farklı dilin ve katmanın birbirine entegre çalıştığı bir boru hattıdır (Pipeline):
+
+```mermaid
+graph TD
+    subgraph Frontend [View Layer - GUI]
+        UI[Python Tkinter <br> gui.py]
+    end
+
+    subgraph Middleware [Lexical Analysis & Orchestration]
+        Sys[tam_sistem.sh <br> Pipeline Orchestrator]
+        Clean[temizleyici.sh <br> Regex Trimming & Filtering]
+    end
+
+    subgraph Backend [Semantic & Code Generation]
+        Comp[derleyici.c <br> OCP Based C Compiler]
+    end
+
+    subgraph Target [Hardware Delivery]
+        ASM[(Motorola 6800 Assembly <br> cikti.asm)]
+    end
+
+    %% Flow of data
+    UI -->|1. Saves source code| Sys
+    Sys -->|2. Passes to| Clean
+    Clean -->|3. Cleaned commands| Comp
+    Comp -->|4. Translates via Strategy Pattern| ASM
+    ASM -.->|5. Rendered back on UI| UI
+```
+
+**Pass 1 — Lexical Pre-processing (Bash/Linux):** Kullanıcının GUI'den girdiği ham TinyLang kodu geçici bir dosyaya kaydedilir. temizleyici.sh betiği; boşlukları ve yorum satırlarını (//) tıraşlar, saf komutları bırakır.
+
+**Pass 2 — Strategy-Based Compilation (C Backend):** Temizlenen kod derleyici.c motoruna beslenir. Motor, if-else bloklarına boğulmak yerine SOLID/OCP (Open-Closed Principle) kurallarına göre tasarlanmış rules[] dizisini (Fonksiyon Göstericileri) kullanarak komutları analiz eder (Semantic Analysis).
+
+**Pass 3 — Hardware Delivery (SDK6800 Strict Compliance):** Emülatörün çökmesini engellemek için kodlar hizalanır ve IF/WHILE etiketlerinin yanına mecburi derleyici boşlukları otomatik olarak eklenir.
 
 ## Requirements
 
@@ -16,6 +53,7 @@ Projeyi derlemek ve çalıştırmak için aşağıdaki Linux/WSL ortamı gereksi
 
 1. Proje dizinine gidin:
 ```bash
+git clone [https://github.com/goktugcakiroglu/TinySys.git](https://github.com/goktugcakiroglu/TinySys.git)
 cd TinySys
 ```
 2. İşletim sistemi betiklerine (Bash) çalıştırma izni verin:
@@ -68,6 +106,8 @@ Sistem, Python GUI üzerinden arka plan (terminal) hatalarını yakalayan güven
 
 ```text
 TinySys/
+├── .github/workflows/
+│   └── tinysys-ci.yml    # Tam sistem entegrasyon testleri
 ├── gui.py              # Frontend: Python Tkinter arayüzü ve state yönetimi
 ├── tam_sistem.sh       # Middleware: Sistem orkestratörü ve Python-C köprüsü
 ├── temizleyici.sh      # Middleware: Lexical temizleyici (Yorum ve boşluk silici)
