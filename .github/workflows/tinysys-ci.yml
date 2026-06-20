@@ -1,0 +1,41 @@
+name: TinySys Pipeline CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set Execute Permissions for Bash Scripts
+      run: chmod +x *.sh
+
+    - name: Compile C Backend Motor
+      run: gcc derleyici.c -o derleyici
+
+    - name: Run Full Pipeline Integration Test
+      run: |
+        # Test için örnek bir TinyLang kodu oluştur
+        echo "X = 10" > test_kodu.txt
+        echo "Y = 20" >> test_kodu.txt
+        echo "SONUC = X + Y" >> test_kodu.txt
+        
+        # Sistemi çalıştır
+        ./tam_sistem.sh
+        
+        # Çıktı dosyasının üretilip üretilmediğini kontrol et
+        if [ -f "cikti.asm" ]; then
+          echo "Test Başarılı: cikti.asm oluşturuldu."
+          cat cikti.asm
+        else
+          echo "Hata: cikti.asm oluşturulamadı!"
+          exit 1
+        fi
+EOF
