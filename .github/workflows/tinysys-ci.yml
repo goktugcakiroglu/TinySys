@@ -38,4 +38,3 @@ jobs:
           echo "Hata: cikti.asm oluşturulamadı!"
           exit 1
         fi
-EOF
